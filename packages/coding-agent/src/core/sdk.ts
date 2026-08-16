@@ -310,6 +310,12 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		// Aegis: RLM is the core inference path. Every prompt is routed through
 		// the RLM REPL — the normal LLM chat path is replaced here.
 		streamFn: rlmStreamFn,
+		// Resolve the API key from the model runtime so local providers
+		// (Ollama) and cloud providers both work with the RLM core.
+		getApiKey: async (provider) => {
+			const auth = await modelRuntime.getAuth(provider);
+			return auth?.auth.apiKey;
+		},
 		onPayload: async (payload, _model) => {
 			const runner = extensionRunnerRef.current;
 			if (!runner?.hasHandlers("before_provider_request")) {
