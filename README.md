@@ -17,6 +17,7 @@
 - **Hermes-style memory & skills** — persistent `MEMORY.md` facts injected into the system prompt, plus auto-generated skills.
 - **Messaging gateway** — connect Aegis to Telegram, Discord, Slack, WhatsApp, and Matrix as a headless bot.
 - **Permissions & effort** — access control for tool execution and a compute dial.
+- **Running modes** — SDLC-driven modes (standard/plan/goal/code/review) with forced coding principles (DRY, SOLID, etc.) and an RLM paradigm check.
 - **Session export/import** — with optional AES-256-GCM encryption.
 
 The binary is `aegis` and the config directory is `~/.aegis/agent/`.
@@ -146,6 +147,7 @@ All Aegis features are implemented as pi extensions in `packages/coding-agent/ex
 | `memory-skills/` | `memory_read`, `memory_write`, `memory_search`, `skill_create`, `/memory` |
 | `gateway/` | `/gateway` (telegram, discord, slack, whatsapp, matrix) |
 | `permissions-effort/` | `/permissions`, `/effort`, `/fast` |
+| `running-modes/` | `/mode`, `/principles`, `/rlm-check` |
 | `session-export/` | `/session` |
 
 Extensions are auto-discovered from `~/.aegis/agent/extensions/` (or `.aegis/extensions/` project-local) and can be hot-reloaded with `/reload`.

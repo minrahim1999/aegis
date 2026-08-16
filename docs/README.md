@@ -10,6 +10,7 @@ Aegis is a personal AI agent harness built on top of [pi](https://github.com/ear
 | [MEMORY-SKILLS.md](MEMORY-SKILLS.md) | Hermes-style memory + auto-generated skills |
 | [GATEWAY.md](GATEWAY.md) | Messaging gateway (Telegram, Discord, Slack, WhatsApp, Matrix) |
 | [PERMISSIONS-EFFORT.md](PERMISSIONS-EFFORT.md) | Permission modes + effort control |
+| [RUNNING-MODES.md](RUNNING-MODES.md) | SDLC running modes + forced coding principles + RLM check |
 | [SESSION-EXPORT.md](SESSION-EXPORT.md) | Session export/import with encryption |
 
 ## Pi (upstream)
