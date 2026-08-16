@@ -45,4 +45,21 @@ Sandbox: `node:vm` blocks `require`/`process`/`fetch`. **Note: `node:vm` is not 
 
 ## Config
 
-The extension uses sensible defaults (max depth 1, 20 iterations, 30s timeout, 2000 stdout chars, 20 sub-calls). These are hardcoded in `packages/coding-agent/examples/extensions/rlm/index.ts` and can be tuned there.
+The RLM core uses sensible defaults (max depth 1, 20 iterations, 30s timeout, 2000 stdout chars, 20 sub-calls). You can tune these at runtime with the `rlm-config` extension:
+
+```bash
+/rlm-config                          # show current config
+/rlm-config maxDepth 2               # set a value
+/rlm-config maxIterations 30
+/rlm-config reset                    # reset to defaults
+```
+
+Config persists to `~/.aegis/agent/rlm-config.json` and is read by the RLM core each turn.
+
+## Progress display
+
+The `rlm-progress` extension shows live RLM REPL progress in the TUI status bar:
+
+```bash
+/rlm-progress on|off
+```

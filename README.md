@@ -144,11 +144,21 @@ All Aegis features are implemented as pi extensions in `packages/coding-agent/ex
 | Extension | Commands / Tools |
 |---|---|
 | `rlm/` | `/rlm`, `/rlm --srlm`, `/rlm --chained` (explicit variants; RLM itself is the core) |
+| `rlm-config/` | `/rlm-config` (tune RLM core params) |
+| `rlm-progress/` | `/rlm-progress` (live RLM progress in TUI) |
 | `memory-skills/` | `memory_read`, `memory_write`, `memory_search`, `skill_create`, `/memory` |
 | `gateway/` | `/gateway` (telegram, discord, slack, whatsapp, matrix) |
 | `permissions-effort/` | `/permissions`, `/effort`, `/fast` |
 | `running-modes/` | `/mode`, `/principles`, `/rlm-check` |
 | `session-export/` | `/session` |
+| `git-checkpoint.ts` | auto git stash checkpoints per turn |
+| `todo.ts` | `todo` tool + `/todos` |
+| `subagent/` | subagent delegation |
+| `protected-paths.ts` | block writes to `.env`, secrets |
+| `confirm-destructive.ts` | confirm before destructive commands |
+| `summarize.ts` | session summarization |
+| `handoff.ts` | handoff doc generation |
+| `notify.ts` | desktop/terminal notifications |
 
 Extensions are auto-discovered from `~/.aegis/agent/extensions/` (or `.aegis/extensions/` project-local) and can be hot-reloaded with `/reload`.
 

@@ -6,7 +6,7 @@ Aegis is a personal AI agent harness built on top of [pi](https://github.com/ear
 
 | Doc | Contents |
 |---|---|
-| [RLM.md](RLM.md) | Recursive Language Models (RLM/SRLM/Chained-RLM) — the core inference path |
+| [RLM.md](RLM.md) | Recursive Language Models (RLM/SRLM/Chained-RLM) — the core inference path + config + progress |
 | [MEMORY-SKILLS.md](MEMORY-SKILLS.md) | Hermes-style memory + auto-generated skills |
 | [GATEWAY.md](GATEWAY.md) | Messaging gateway (Telegram, Discord, Slack, WhatsApp, Matrix) |
 | [PERMISSIONS-EFFORT.md](PERMISSIONS-EFFORT.md) | Permission modes + effort control |
