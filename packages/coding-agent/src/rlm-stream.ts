@@ -259,6 +259,11 @@ class Rlm {
 			if (result.finished) {
 				return { answer: result.finalValue, iterations, subCalls, depth };
 			}
+			// If the model produced a non-empty stdout, use it as a fallback
+			// answer so the loop doesn't spin forever without setting Final.
+			if (result.stdout.trim()) {
+				return { answer: result.stdout.trim(), iterations, subCalls, depth };
+			}
 		}
 
 		return { answer: "Reached maximum RLM iterations without setting Final.", iterations, subCalls, depth };
@@ -281,7 +286,7 @@ function replStdout(messages: Array<{ role: string; content: string }>): string 
 
 const DEFAULTS = {
 	maxDepth: 1,
-	maxIterations: 20,
+	maxIterations: 5,
 	timeoutMs: 30000,
 	maxStdoutChars: 2000,
 	maxSubCalls: 20,
