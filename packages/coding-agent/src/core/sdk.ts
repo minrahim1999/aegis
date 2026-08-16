@@ -2,10 +2,10 @@ import { join } from "node:path";
 import {
 	Agent,
 	type AgentMessage,
-	rlmStreamFn,
 	setDefaultStreamFn,
 	type ThinkingLevel,
 } from "@earendil-works/pi-agent-core";
+import { rlmStreamFn } from "../rlm-stream.ts";
 import { clampThinkingLevel, type Message, type Model } from "@earendil-works/pi-ai/compat";
 import { getAgentDir } from "../config.ts";
 import { resolvePath } from "../utils/paths.ts";
