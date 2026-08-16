@@ -2,7 +2,8 @@ import { compare, valid } from "semver";
 import { fetchWithRetry } from "./management-http.ts";
 import { getPiUserAgent } from "./pi-user-agent.ts";
 
-const LATEST_VERSION_URL = "https://pi.dev/api/latest-version";
+// Aegis checks the npm registry for the latest aegis-harness version.
+const LATEST_VERSION_URL = "https://registry.npmjs.org/aegis-harness/latest";
 const DEFAULT_VERSION_CHECK_TIMEOUT_MS = 10000;
 
 export interface LatestPiRelease {
