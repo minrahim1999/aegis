@@ -1,6 +1,9 @@
 /**
  * RLM extension — Recursive Language Models (arXiv:2512.24601) for Aegis.
  *
+ * RLM is the core inference path of Aegis (see packages/agent/src/rlm-stream.ts).
+ * This extension exposes explicit variants (SRLM, Chained-RLM) as commands.
+ *
  * Ported from Athena Agent. The prompt lives as a variable `P` in a sandboxed
  * REPL (node:vm); the model writes code to probe/decompose it and recursively
  * call itself over snippets. Only constant-size metadata + truncated stdout

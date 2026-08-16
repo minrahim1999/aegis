@@ -1,12 +1,23 @@
 # Aegis — Recursive Language Models
 
-Aegis implements the RLM inference paradigm from [arXiv:2512.24601](https://arxiv.org/abs/2512.24601) (Zhang, Kraska, Khattab — MIT CSAIL), plus two follow-up variants, as a pi extension.
+Aegis implements the RLM inference paradigm from [arXiv:2512.24601](https://arxiv.org/abs/2512.24601) (Zhang, Kraska, Khattab — MIT CSAIL), plus two follow-up variants.
+
+## RLM is the core
+
+**RLM is the core inference path of Aegis.** Every prompt is routed through the RLM paradigm, not a normal LLM chat. This is baked into the agent core:
+
+- `packages/agent/src/rlm-stream.ts` — the RLM-based `StreamFn`
+- `packages/coding-agent/src/core/sdk.ts` — wires `rlmStreamFn` as the default
+
+Because it's in the core (not an extension), it **cannot be overridden or bypassed** by extensions or plugins.
 
 ## The idea
 
 Instead of feeding a long prompt into the model's context window, the prompt lives as a **variable `P` in a sandboxed REPL**. The model writes JavaScript code to probe, decompose, and recursively call itself over snippets. Only constant-size metadata + truncated stdout enter the context — so prompts far beyond the context window work.
 
 ## Usage
+
+Every prompt automatically goes through RLM. The extension also exposes explicit variants:
 
 ```bash
 /rlm "question"                  # plain RLM (Algorithm 1)

@@ -12,7 +12,7 @@
 
 **Aegis** is a personal AI agent harness built on top of [pi](https://github.com/earendil-works/pi). It keeps pi's minimal, extensible terminal coding harness and adds a set of agent features ported from [Athena Agent](https://github.com/minrahim1999/athena-agent):
 
-- **Recursive Language Models (RLM / SRLM / Chained-RLM)** — run the RLM inference paradigm (arXiv:2512.24601) where the prompt lives as a variable in a sandboxed REPL.
+- **Recursive Language Models (RLM) as the core** — every prompt is routed through the RLM inference paradigm (arXiv:2512.24601) where the prompt lives as a variable in a sandboxed REPL. This is baked into the agent core and cannot be overridden.
 - **Hermes-style memory & skills** — persistent `MEMORY.md` facts injected into the system prompt, plus auto-generated skills.
 - **Messaging gateway** — connect Aegis to Telegram, Discord, Slack, WhatsApp, and Matrix as a headless bot.
 - **Permissions & effort** — access control for tool execution and a compute dial.
@@ -42,9 +42,13 @@ Aegis runs in the same modes as pi: interactive TUI, print/JSON, RPC, and an SDK
 
 ## Aegis Features
 
-### Recursive Language Models (`/rlm`)
+### Recursive Language Models (RLM) — the core
 
-The RLM paradigm (arXiv:2512.24601) recreated as a pi extension. The prompt lives as a variable `P` in a sandboxed `node:vm` REPL; the model writes code to probe/decompose it and recursively call itself over snippets. Only constant-size metadata + truncated stdout enter the context, so prompts far beyond the context window work.
+**RLM is the core inference path of Aegis.** Every prompt you send is routed through the RLM paradigm (arXiv:2512.24601), not a normal LLM chat. The prompt lives as a variable `P` in a sandboxed `node:vm` REPL; the model writes code to probe/decompose it and recursively call itself over snippets. Only constant-size metadata + truncated stdout enter the context, so prompts far beyond the context window work.
+
+This is baked into the agent core (`packages/agent/src/rlm-stream.ts` + `sdk.ts`), so it **cannot be overridden or bypassed** by extensions or plugins.
+
+The RLM extension also exposes explicit variants:
 
 ```bash
 /rlm "What is 15 * 7 + 3?"
@@ -126,7 +130,7 @@ All Aegis features are implemented as pi extensions in `packages/coding-agent/ex
 
 | Extension | Commands / Tools |
 |---|---|
-| `rlm/` | `/rlm`, `/rlm --srlm`, `/rlm --chained` |
+| `rlm/` | `/rlm`, `/rlm --srlm`, `/rlm --chained` (explicit variants; RLM itself is the core) |
 | `memory-skills/` | `memory_read`, `memory_write`, `memory_search`, `skill_create`, `/memory` |
 | `gateway/` | `/gateway` (telegram, discord, slack, whatsapp, matrix) |
 | `permissions-effort/` | `/permissions`, `/effort`, `/fast` |
