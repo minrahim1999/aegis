@@ -203,7 +203,10 @@ async function chat(
 				timestamp: Date.now(),
 			})) as Context["messages"],
 	};
-	const result = await completeSimple(model, context, options);
+	// Ensure the API key is available for the sub-call. The agent loop passes
+	// it in options; fall back to the model's own apiKey or a provider default.
+	const apiKey = options?.apiKey ?? (model as { apiKey?: string }).apiKey;
+	const result = await completeSimple(model, context, { ...options, apiKey });
 	return result.content
 		.filter((b) => b.type === "text")
 		.map((b) => (b as { text: string }).text)
