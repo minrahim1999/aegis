@@ -12,6 +12,7 @@
  * overridden or bypassed by plugins.
  */
 import vm from "node:vm";
+import type { StreamFn } from "@earendil-works/pi-agent-core";
 import {
 	type AssistantMessage,
 	type Context,
@@ -21,7 +22,6 @@ import {
 	type SimpleStreamOptions,
 	type Usage,
 } from "@earendil-works/pi-ai/compat";
-import type { StreamFn } from "@earendil-works/pi-agent-core";
 
 // ============================================================================
 // RLM system prompt + code extraction
@@ -284,6 +284,18 @@ const DEFAULTS = {
 	maxSubCalls: 20,
 };
 
+/** Read RLM config from the env var set by the rlm-config extension. */
+function readRlmConfig(): typeof DEFAULTS {
+	const raw = process.env.AEGIS_RLM_CONFIG;
+	if (!raw) return { ...DEFAULTS };
+	try {
+		const parsed = JSON.parse(raw) as Partial<typeof DEFAULTS>;
+		return { ...DEFAULTS, ...parsed };
+	} catch {
+		return { ...DEFAULTS };
+	}
+}
+
 /**
  * The RLM stream function. Replaces streamSimple as the default StreamFn.
  * Every prompt is routed through the RLM REPL.
@@ -301,13 +313,14 @@ export const rlmStreamFn: StreamFn = (model, context, options) => {
 
 	void (async () => {
 		try {
+			const cfg = readRlmConfig();
 			const rlm = new Rlm({
 				model,
-				maxDepth: DEFAULTS.maxDepth,
-				maxIterations: DEFAULTS.maxIterations,
-				timeoutMs: DEFAULTS.timeoutMs,
-				maxStdoutChars: DEFAULTS.maxStdoutChars,
-				maxSubCalls: DEFAULTS.maxSubCalls,
+				maxDepth: cfg.maxDepth,
+				maxIterations: cfg.maxIterations,
+				timeoutMs: cfg.timeoutMs,
+				maxStdoutChars: cfg.maxStdoutChars,
+				maxSubCalls: cfg.maxSubCalls,
 				options,
 			});
 			const result = await rlm.run(userPrompt || "(empty prompt)");
