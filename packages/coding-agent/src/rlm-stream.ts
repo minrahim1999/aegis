@@ -204,8 +204,12 @@ async function chat(
 			})) as Context["messages"],
 	};
 	// Ensure the API key is available for the sub-call. The agent loop passes
-	// it in options; fall back to the model's own apiKey or a provider default.
-	const apiKey = options?.apiKey ?? (model as { apiKey?: string }).apiKey;
+	// it in options; fall back to the model's own apiKey, then to a
+	// provider-appropriate default (Ollama uses a dummy key).
+	const apiKey =
+		options?.apiKey ??
+		(model as { apiKey?: string }).apiKey ??
+		(model.provider === "ollama" ? "ollama" : undefined);
 	const result = await completeSimple(model, context, { ...options, apiKey });
 	return result.content
 		.filter((b) => b.type === "text")
