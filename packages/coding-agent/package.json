@@ -1,6 +1,6 @@
 {
   "name": "aegis-harness",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Aegis — a personal AI agent harness built on pi, with RLM, memory, skills, messaging gateway, permissions, and effort control",
   "type": "module",
   "piConfig": {
