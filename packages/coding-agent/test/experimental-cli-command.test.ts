@@ -17,7 +17,7 @@ describe("experimental CLI commands", () => {
 		).toMatchObject({
 			ok: true,
 			command: {
-				command: "pi",
+				command: "aegis",
 				options: {
 					provider: "anthropic",
 					model: "claude-sonnet",
@@ -42,7 +42,7 @@ describe("experimental CLI commands", () => {
 		expect(experimentalCli.parse(["--system-prompt", "--listen", "unix:///tmp/pi.sock"])).toMatchObject({
 			ok: true,
 			command: {
-				command: "pi",
+				command: "aegis",
 				options: { systemPrompt: "--listen", messages: ["unix:///tmp/pi.sock"] },
 			},
 		});
@@ -52,9 +52,9 @@ describe("experimental CLI commands", () => {
 		const result = experimentalCli.parse(["--model", "claude-sonnet", "--listen=unix:///tmp/second.sock"]);
 		expect(result).toMatchObject({
 			ok: true,
-			command: { command: "pi", options: { model: "claude-sonnet" } },
+			command: { command: "aegis", options: { model: "claude-sonnet" } },
 		});
-		if (!result.ok || result.command.command !== "pi") return;
+		if (!result.ok || result.command.command !== "aegis") return;
 		expect(result.command.listen).toBeUndefined();
 		expect(result.command.options.unknownFlags.get("listen")).toBe("unix:///tmp/second.sock");
 	});
@@ -75,7 +75,7 @@ describe("experimental CLI commands", () => {
 	] as const)("parses authentication source %j", (argv, auth) => {
 		expect(experimentalCli.parse(argv)).toMatchObject({
 			ok: true,
-			command: { command: "pi", auth },
+			command: { command: "aegis", auth },
 		});
 	});
 
@@ -83,7 +83,7 @@ describe("experimental CLI commands", () => {
 		"permits omitted authentication for later environment/default resolution",
 		(argv) => {
 			const result = experimentalCli.parse(argv);
-			expect(result).toMatchObject({ ok: true, command: { command: argv[0] ?? "pi" } });
+			expect(result).toMatchObject({ ok: true, command: { command: argv[0] ?? "aegis" } });
 			if (result.ok) expect(result.command.auth).toBeUndefined();
 		},
 	);
@@ -92,9 +92,9 @@ describe("experimental CLI commands", () => {
 		const result = experimentalCli.parse(["--unknown", "@prompt.md", "--", "--listen", "unix:///tmp/pi.sock"]);
 		expect(result).toMatchObject({
 			ok: true,
-			command: { command: "pi", options: { fileArgs: ["prompt.md"] } },
+			command: { command: "aegis", options: { fileArgs: ["prompt.md"] } },
 		});
-		if (!result.ok || result.command.command !== "pi") return;
+		if (!result.ok || result.command.command !== "aegis") return;
 		expect(result.command.options.unknownFlags.get("unknown")).toBe(true);
 		expect(result.command.options.unknownFlags.get("listen")).toBe("unix:///tmp/pi.sock");
 	});
@@ -157,7 +157,7 @@ describe("experimental CLI commands", () => {
 	test("treats command names after the first argument as existing CLI arguments", () => {
 		expect(experimentalCli.parse(["--cwd", "/workspace", "server"])).toMatchObject({
 			ok: true,
-			command: { command: "pi", options: { messages: ["server"] } },
+			command: { command: "aegis", options: { messages: ["server"] } },
 		});
 	});
 });
