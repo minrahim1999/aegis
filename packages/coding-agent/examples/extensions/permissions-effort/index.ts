@@ -120,7 +120,10 @@ export default function permissionsEffortExtension(pi: ExtensionAPI): void {
 		}
 		if (decision === "ask") {
 			// In a headless/extension context, fail-closed (no interactive approver).
-			return { block: true, reason: `Tool ${event.toolName} requires approval (permission mode: ${cfg.permissions.mode}).` };
+			return {
+				block: true,
+				reason: `Tool ${event.toolName} requires approval (permission mode: ${cfg.permissions.mode}).`,
+			};
 		}
 		return undefined;
 	});
@@ -184,7 +187,10 @@ export default function permissionsEffortExtension(pi: ExtensionAPI): void {
 				return;
 			}
 
-			ctx.ui.notify("Usage: /permissions [safe|auto|restricted] | rule <tool> <allow|ask|deny> | unrule <tool>", "warning");
+			ctx.ui.notify(
+				"Usage: /permissions [safe|auto|restricted] | rule <tool> <allow|ask|deny> | unrule <tool>",
+				"warning",
+			);
 		},
 	});
 

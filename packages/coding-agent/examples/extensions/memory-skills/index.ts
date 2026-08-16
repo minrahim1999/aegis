@@ -11,9 +11,9 @@
  * Memory file: ~/.aegis/agent/memory/MEMORY.md
  * Generated skills: ~/.aegis/agent/skills/generated/<name>/SKILL.md
  */
-import { mkdir, readFile, writeFile, readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
+import { join } from "node:path";
 import { Type } from "@earendil-works/pi-ai";
 import { defineTool, type ExtensionAPI, type ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
 
@@ -122,7 +122,8 @@ const memoryReadTool = defineTool({
 const memoryWriteTool = defineTool({
 	name: "memory_write",
 	label: "Memory Write",
-	description: "Append a persistent fact about the user to MEMORY.md (e.g. preferences, decisions, important context).",
+	description:
+		"Append a persistent fact about the user to MEMORY.md (e.g. preferences, decisions, important context).",
 	parameters: Type.Object({
 		fact: Type.String({ description: "The fact to remember" }),
 	}),
@@ -164,17 +165,22 @@ const memorySearchTool = defineTool({
 const skillCreateTool = defineTool({
 	name: "skill_create",
 	label: "Skill Create",
-	description: "Create a reusable skill (SKILL.md) from a workflow the user wants to repeat. The skill becomes available in future sessions.",
+	description:
+		"Create a reusable skill (SKILL.md) from a workflow the user wants to repeat. The skill becomes available in future sessions.",
 	parameters: Type.Object({
 		name: Type.String({ description: "Skill name (lowercase, hyphens)" }),
 		description: Type.String({ description: "One-line description" }),
 		steps: Type.String({ description: "Step-by-step procedure the agent should follow" }),
 	}),
 	async execute(_id, params) {
-		const name = params.name.trim().toLowerCase().replace(/[^a-z0-9-]/g, "-");
+		const name = params.name
+			.trim()
+			.toLowerCase()
+			.replace(/[^a-z0-9-]/g, "-");
 		const description = params.description.trim();
 		const steps = params.steps.trim();
-		if (!/^[a-z0-9-]{2,40}$/.test(name)) throw new Error("name must be 2-40 chars of lowercase letters, digits, hyphens");
+		if (!/^[a-z0-9-]{2,40}$/.test(name))
+			throw new Error("name must be 2-40 chars of lowercase letters, digits, hyphens");
 		if (!description) throw new Error("description is required");
 		if (!steps) throw new Error("steps are required");
 

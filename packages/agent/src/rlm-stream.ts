@@ -12,7 +12,15 @@
  * overridden or bypassed by plugins.
  */
 import vm from "node:vm";
-import { completeSimple, createAssistantMessageEventStream, type AssistantMessage, type Context, type Model, type SimpleStreamOptions, type Usage } from "@earendil-works/pi-ai/compat";
+import {
+	type AssistantMessage,
+	type Context,
+	completeSimple,
+	createAssistantMessageEventStream,
+	type Model,
+	type SimpleStreamOptions,
+	type Usage,
+} from "@earendil-works/pi-ai/compat";
 import type { StreamFn } from "./types.ts";
 
 // ============================================================================
@@ -130,7 +138,8 @@ class RlmRepl {
 			});
 			if (this.sandbox.Final !== undefined) {
 				finished = true;
-				finalValue = typeof this.sandbox.Final === "string" ? this.sandbox.Final : JSON.stringify(this.sandbox.Final);
+				finalValue =
+					typeof this.sandbox.Final === "string" ? this.sandbox.Final : JSON.stringify(this.sandbox.Final);
 			} else if (result !== undefined) {
 				finished = true;
 				finalValue = typeof result === "string" ? result : JSON.stringify(result);
@@ -179,7 +188,11 @@ interface RlmResult {
 }
 
 /** Make a single LLM call via completeSimple (the RLM sub-model). */
-async function chat(model: Model<any>, messages: Array<{ role: "system" | "user" | "assistant"; content: string }>, options?: SimpleStreamOptions): Promise<string> {
+async function chat(
+	model: Model<any>,
+	messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
+	options?: SimpleStreamOptions,
+): Promise<string> {
 	const context: Context = {
 		systemPrompt: messages.find((m) => m.role === "system")?.content,
 		messages: messages
@@ -206,7 +219,9 @@ class Rlm {
 
 	async run(prompt: string, depth = 0): Promise<RlmResult> {
 		const { model, maxIterations } = this.options;
-		const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [{ role: "system", content: RLM_SYSTEM_PROMPT }];
+		const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+			{ role: "system", content: RLM_SYSTEM_PROMPT },
+		];
 		let subCalls = 0;
 		let iterations = 0;
 		const repl = new RlmRepl({
@@ -234,7 +249,10 @@ class Rlm {
 			}
 			const result = await repl.run(code);
 			messages.push({ role: "assistant", content: code });
-			messages.push({ role: "user", content: `[executed]\n${result.error ? `ERROR: ${result.error}` : result.stdout}` });
+			messages.push({
+				role: "user",
+				content: `[executed]\n${result.error ? `ERROR: ${result.error}` : result.stdout}`,
+			});
 			if (result.finished) {
 				return { answer: result.finalValue, iterations, subCalls, depth };
 			}
@@ -276,7 +294,9 @@ export const rlmStreamFn: StreamFn = (model, context, options) => {
 	// Extract the user prompt from the context.
 	const userPrompt = context.messages
 		.filter((m) => m.role === "user")
-		.map((m) => (typeof m.content === "string" ? m.content : m.content.map((c) => (c.type === "text" ? c.text : "")).join("")))
+		.map((m) =>
+			typeof m.content === "string" ? m.content : m.content.map((c) => (c.type === "text" ? c.text : "")).join(""),
+		)
 		.join("\n");
 
 	void (async () => {

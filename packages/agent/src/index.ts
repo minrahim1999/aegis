@@ -138,10 +138,10 @@ export * from "./harness/utils/shell-output.ts";
 export * from "./harness/utils/truncate.ts";
 // Proxy utilities
 export * from "./proxy.ts";
+// RLM core inference path (Aegis)
+export { rlmStreamFn } from "./rlm-stream.ts";
 export * from "./search/index.ts";
 // Stream defaults
 export { setDefaultStreamFn } from "./stream-fn.ts";
-// RLM core inference path (Aegis)
-export { rlmStreamFn } from "./rlm-stream.ts";
 // Types
 export * from "./types.ts";

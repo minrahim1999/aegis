@@ -23,7 +23,12 @@
  *   PI_MATRIX_HOMESERVER + PI_MATRIX_TOKEN + PI_MATRIX_USER
  */
 import { createServer, type Server } from "node:http";
-import { createAgentSession, type AgentSession, type ExtensionAPI, type ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
+import {
+	type AgentSession,
+	createAgentSession,
+	type ExtensionAPI,
+	type ExtensionCommandContext,
+} from "@earendil-works/pi-coding-agent";
 
 // ============================================================================
 // Channel adapter interface
@@ -274,7 +279,10 @@ class SlackAdapter implements ChannelAdapter {
 		const ws = new WebSocket(data.url);
 		this.ws = ws;
 		ws.onmessage = (event) => {
-			const payload = JSON.parse(String(event.data)) as { type?: string; payload?: { event?: { type?: string; subtype?: string; text?: string; channel?: string; user?: string } } };
+			const payload = JSON.parse(String(event.data)) as {
+				type?: string;
+				payload?: { event?: { type?: string; subtype?: string; text?: string; channel?: string; user?: string } };
+			};
 			if (payload.type !== "events_api") return;
 			const ev = payload.payload?.event;
 			if (!ev) return;
@@ -330,7 +338,9 @@ class WhatsAppAdapter implements ChannelAdapter {
 			}
 			if (req.method === "POST" && req.url?.startsWith("/webhook")) {
 				let body = "";
-				req.on("data", (c: Buffer) => (body += c.toString()));
+				req.on("data", (c: Buffer) => {
+					body += c.toString();
+				});
 				req.on("end", () => {
 					res.writeHead(200);
 					res.end("OK");
@@ -365,7 +375,15 @@ class WhatsAppAdapter implements ChannelAdapter {
 		} catch {
 			return;
 		}
-		const entry = (parsed as { entry?: Array<{ changes?: Array<{ value?: { messages?: Array<{ from: string; type?: string; text?: { body?: string } }> } }> }> })?.entry?.[0];
+		const entry = (
+			parsed as {
+				entry?: Array<{
+					changes?: Array<{
+						value?: { messages?: Array<{ from: string; type?: string; text?: { body?: string } }> };
+					}>;
+				}>;
+			}
+		)?.entry?.[0];
 		const messages = entry?.changes?.[0]?.value?.messages;
 		if (!messages) return;
 		for (const msg of messages) {
@@ -430,7 +448,18 @@ class MatrixAdapter implements ChannelAdapter {
 				if (!res.ok) throw new Error(`Matrix sync failed: HTTP ${res.status}`);
 				const data = (await res.json()) as {
 					next_batch?: string;
-					rooms?: { timeline?: Record<string, { events?: Array<{ type?: string; sender?: string; content?: { msgtype?: string; body?: string } }> }> };
+					rooms?: {
+						timeline?: Record<
+							string,
+							{
+								events?: Array<{
+									type?: string;
+									sender?: string;
+									content?: { msgtype?: string; body?: string };
+								}>;
+							}
+						>;
+					};
 				};
 				this.nextBatch = data.next_batch ?? this.nextBatch;
 				for (const [roomId, room] of Object.entries(data.rooms?.timeline ?? {})) {
@@ -536,7 +565,9 @@ class Gateway {
 		} catch (err) {
 			const adapter = this.adapters.get(env.channel);
 			if (adapter) {
-				await adapter.send(env.chatId, `Error: ${err instanceof Error ? err.message : String(err)}`).catch(() => {});
+				await adapter
+					.send(env.chatId, `Error: ${err instanceof Error ? err.message : String(err)}`)
+					.catch(() => {});
 			}
 		}
 	}
@@ -582,7 +613,10 @@ export default function gatewayExtension(pi: ExtensionAPI): void {
 			}
 
 			if (action !== "start" || !channel) {
-				ctx.ui.notify("Usage: /gateway start <telegram|discord|slack|whatsapp|matrix> | stop [channel] | status", "warning");
+				ctx.ui.notify(
+					"Usage: /gateway start <telegram|discord|slack|whatsapp|matrix> | stop [channel] | status",
+					"warning",
+				);
 				return;
 			}
 
@@ -605,7 +639,8 @@ export default function gatewayExtension(pi: ExtensionAPI): void {
 					case "slack": {
 						const appToken = parts[2] || process.env.PI_SLACK_APP_TOKEN;
 						const botToken = parts[3] || process.env.PI_SLACK_BOT_TOKEN;
-						if (!appToken || !botToken) throw new Error("Slack app + bot tokens required (PI_SLACK_APP_TOKEN, PI_SLACK_BOT_TOKEN)");
+						if (!appToken || !botToken)
+							throw new Error("Slack app + bot tokens required (PI_SLACK_APP_TOKEN, PI_SLACK_BOT_TOKEN)");
 						await gateway.startChannel(new SlackAdapter(appToken, botToken));
 						break;
 					}

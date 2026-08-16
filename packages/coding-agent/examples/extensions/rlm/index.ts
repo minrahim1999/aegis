@@ -15,8 +15,8 @@
  *   /rlm --chained <n> <q>   Fresh-context roots + blackboard handoff (2608.05124)
  */
 import vm from "node:vm";
-import type { ExtensionAPI, ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
 import type { Context, Message, Model } from "@earendil-works/pi-ai";
+import type { ExtensionAPI, ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
 
 // ============================================================================
 // RLM system prompt + code extraction (paper Appendix C style)
@@ -153,7 +153,8 @@ class RlmRepl {
 			});
 			if (this.sandbox.Final !== undefined) {
 				finished = true;
-				finalValue = typeof this.sandbox.Final === "string" ? this.sandbox.Final : JSON.stringify(this.sandbox.Final);
+				finalValue =
+					typeof this.sandbox.Final === "string" ? this.sandbox.Final : JSON.stringify(this.sandbox.Final);
 			} else if (result !== undefined) {
 				finished = true;
 				finalValue = typeof result === "string" ? result : JSON.stringify(result);
@@ -217,11 +218,7 @@ function toPiMessage(m: ChatMessage): Message {
 }
 
 /** Make a single LLM call via pi's model registry. */
-async function chat(
-	ctx: ExtensionCommandContext,
-	model: Model<any>,
-	messages: ChatMessage[],
-): Promise<string> {
+async function chat(ctx: ExtensionCommandContext, model: Model<any>, messages: ChatMessage[]): Promise<string> {
 	const context: Context = {
 		systemPrompt: messages.find((m) => m.role === "system")?.content,
 		messages: messages.filter((m) => m.role !== "system").map(toPiMessage),
@@ -299,7 +296,10 @@ class Rlm {
 			const result = await repl.run(code);
 			this.options.onIteration?.({ depth, code, stdout: result.stdout, error: result.error });
 			messages.push({ role: "assistant", content: code });
-			messages.push({ role: "user", content: `[executed]\n${result.error ? `ERROR: ${result.error}` : result.stdout}` });
+			messages.push({
+				role: "user",
+				content: `[executed]\n${result.error ? `ERROR: ${result.error}` : result.stdout}`,
+			});
 			if (result.finished) {
 				return { answer: result.finalValue, iterations, subCalls, depth };
 			}
@@ -332,7 +332,8 @@ interface SrlmOptions {
 	maxSubCalls: number;
 }
 
-const SRLM_PROMPT_SUFFIX = `\n\nIMPORTANT: Provide ${"${N}"} DIFFERENT candidate programs, numbered 1..N, each in its own code fence. After each program, add a comment line with your confidence: // confidence: 0.0-1.0`;
+const SRLM_PROMPT_SUFFIX =
+	"\n\nIMPORTANT: Provide ${N} DIFFERENT candidate programs, numbered 1..N, each in its own code fence. After each program, add a comment line with your confidence: // confidence: 0.0-1.0";
 
 async function runSrlm(ctx: ExtensionCommandContext, options: SrlmOptions, prompt: string): Promise<string> {
 	const { model, numCandidates, maxIterations } = options;
@@ -372,7 +373,10 @@ async function runSrlm(ctx: ExtensionCommandContext, options: SrlmOptions, promp
 			return best.result.finalValue;
 		}
 		messages.push({ role: "assistant", content: best.code });
-		messages.push({ role: "user", content: `[executed]\n${best.result.error ? `ERROR: ${best.result.error}` : best.result.stdout}` });
+		messages.push({
+			role: "user",
+			content: `[executed]\n${best.result.error ? `ERROR: ${best.result.error}` : best.result.stdout}`,
+		});
 	}
 
 	return "Reached maximum SRLM iterations without a final answer.";
@@ -484,7 +488,10 @@ async function runChained(ctx: ExtensionCommandContext, options: ChainedOptions,
 			}
 			const result = await repl.run(code);
 			messages.push({ role: "assistant", content: code });
-			messages.push({ role: "user", content: `[executed]\n${result.error ? `ERROR: ${result.error}` : result.stdout}` });
+			messages.push({
+				role: "user",
+				content: `[executed]\n${result.error ? `ERROR: ${result.error}` : result.stdout}`,
+			});
 			for (const line of result.stdout.split("\n")) {
 				const t = line.trim();
 				if (t && t.length > 3) artifactLines.push(t);
@@ -563,7 +570,14 @@ export default function rlmExtension(pi: ExtensionAPI): void {
 					const question = trimmed.replace(/^--srlm\s*/, "").trim();
 					const answer = await runSrlm(
 						ctx,
-						{ model, numCandidates: DEFAULTS.srlmCandidates, maxIterations: DEFAULTS.maxIterations, timeoutMs: DEFAULTS.timeoutMs, maxStdoutChars: DEFAULTS.maxStdoutChars, maxSubCalls: DEFAULTS.maxSubCalls },
+						{
+							model,
+							numCandidates: DEFAULTS.srlmCandidates,
+							maxIterations: DEFAULTS.maxIterations,
+							timeoutMs: DEFAULTS.timeoutMs,
+							maxStdoutChars: DEFAULTS.maxStdoutChars,
+							maxSubCalls: DEFAULTS.maxSubCalls,
+						},
 						question,
 					);
 					ctx.ui.setStatus("rlm", undefined);
@@ -578,7 +592,15 @@ export default function rlmExtension(pi: ExtensionAPI): void {
 					const question = nMatch ? nMatch[2]!.trim() : rest;
 					const answer = await runChained(
 						ctx,
-						{ model, numRoots, maxIterations: DEFAULTS.maxIterations, timeoutMs: DEFAULTS.timeoutMs, maxStdoutChars: DEFAULTS.maxStdoutChars, maxSubCalls: DEFAULTS.maxSubCalls, maxBlackboardChars: DEFAULTS.chainedBlackboardChars },
+						{
+							model,
+							numRoots,
+							maxIterations: DEFAULTS.maxIterations,
+							timeoutMs: DEFAULTS.timeoutMs,
+							maxStdoutChars: DEFAULTS.maxStdoutChars,
+							maxSubCalls: DEFAULTS.maxSubCalls,
+							maxBlackboardChars: DEFAULTS.chainedBlackboardChars,
+						},
 						question,
 					);
 					ctx.ui.setStatus("rlm", undefined);
