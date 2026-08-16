@@ -141,5 +141,7 @@ export * from "./proxy.ts";
 export * from "./search/index.ts";
 // Stream defaults
 export { setDefaultStreamFn } from "./stream-fn.ts";
+// RLM core inference path (Aegis)
+export { rlmStreamFn } from "./rlm-stream.ts";
 // Types
 export * from "./types.ts";

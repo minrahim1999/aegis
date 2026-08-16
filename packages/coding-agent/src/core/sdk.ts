@@ -30,10 +30,11 @@ import {
 	withFileMutationQueue,
 } from "./tools/index.ts";
 
-// Preserve the pre-0.81 fallback for extensions that construct Agent instances
-// or invoke low-level agent loops without supplying streamFn. Agent core remains
-// provider-agnostic and does not import pi-ai/compat itself.
-setDefaultStreamFn(streamSimple);
+// Aegis: RLM is the core inference path. Every prompt is routed through the
+// Recursive Language Model (RLM) REPL — the normal LLM chat path is replaced.
+// This is baked into the core and cannot be overridden by extensions/plugins.
+import { rlmStreamFn } from "@earendil-works/pi-agent-core";
+setDefaultStreamFn(rlmStreamFn);
 
 export interface CreateAgentSessionOptions {
 	/** Working directory for project-local discovery. Default: process.cwd() */
