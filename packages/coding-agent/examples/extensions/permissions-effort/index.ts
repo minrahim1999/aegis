@@ -81,7 +81,6 @@ function decide(config: PermissionConfig, toolName: string): PermissionAction {
 			return "allow";
 		case "restricted":
 			return "ask";
-		case "safe":
 		default:
 			return SENSITIVE_TOOLS.has(toolName) ? "ask" : "allow";
 	}
@@ -104,7 +103,6 @@ const EFFORT_THINKING: Record<EffortLevel, "off" | "low" | "medium" | "high"> = 
 
 export default function permissionsEffortExtension(pi: ExtensionAPI): void {
 	let config: { permissions: PermissionConfig; effort: EffortConfig } | null = null;
-	let desiredEffort: EffortLevel | null = null;
 
 	const getConfig = async () => {
 		if (!config) config = await loadConfig();
@@ -126,17 +124,6 @@ export default function permissionsEffortExtension(pi: ExtensionAPI): void {
 			};
 		}
 		return undefined;
-	});
-
-	// Apply effort → thinking level on model select.
-	pi.on("model_select", async (_event, ctx) => {
-		const cfg = await getConfig();
-		const level = cfg.effort.fast ? "low" : cfg.effort.level;
-		if (level) {
-			// setThinkingLevel is only on ExtensionCommandContext; store the
-			// desired level here and apply it in the /effort command handler.
-			desiredEffort = level;
-		}
 	});
 
 	// /permissions command
@@ -209,7 +196,6 @@ export default function permissionsEffortExtension(pi: ExtensionAPI): void {
 			if (["low", "medium", "high", "xhigh"].includes(level)) {
 				cfg.effort.level = level as EffortLevel;
 				await saveConfig(cfg);
-				desiredEffort = level as EffortLevel;
 				pi.setThinkingLevel(EFFORT_THINKING[level as EffortLevel]);
 				ctx.ui.notify(`Effort set to ${level}.`, "info");
 				return;

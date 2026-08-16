@@ -11,7 +11,7 @@
  * Memory file: ~/.aegis/agent/memory/MEMORY.md
  * Generated skills: ~/.aegis/agent/skills/generated/<name>/SKILL.md
  */
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { Type } from "@earendil-works/pi-ai";

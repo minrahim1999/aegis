@@ -333,12 +333,12 @@ interface SrlmOptions {
 }
 
 const SRLM_PROMPT_SUFFIX =
-	"\n\nIMPORTANT: Provide ${N} DIFFERENT candidate programs, numbered 1..N, each in its own code fence. After each program, add a comment line with your confidence: // confidence: 0.0-1.0";
+	"\n\nIMPORTANT: Provide {N} DIFFERENT candidate programs, numbered 1..N, each in its own code fence. After each program, add a comment line with your confidence: // confidence: 0.0-1.0";
 
 async function runSrlm(ctx: ExtensionCommandContext, options: SrlmOptions, prompt: string): Promise<string> {
 	const { model, numCandidates, maxIterations } = options;
 	const messages: ChatMessage[] = [
-		{ role: "system", content: RLM_SYSTEM_PROMPT + SRLM_PROMPT_SUFFIX.replace("${N}", String(numCandidates)) },
+		{ role: "system", content: RLM_SYSTEM_PROMPT + SRLM_PROMPT_SUFFIX.replace("{N}", String(numCandidates)) },
 	];
 
 	const repl = new RlmRepl({

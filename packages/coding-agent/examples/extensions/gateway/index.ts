@@ -63,14 +63,12 @@ interface TelegramUpdate {
 
 class TelegramAdapter implements ChannelAdapter {
 	readonly name = "telegram";
-	private readonly token: string;
 	private offset = 0;
 	private running = false;
 	private onMessage: ((env: Envelope) => void) | null = null;
 	private readonly baseUrl: string;
 
 	constructor(token: string) {
-		this.token = token;
 		this.baseUrl = `https://api.telegram.org/bot${token}`;
 	}
 
