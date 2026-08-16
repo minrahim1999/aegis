@@ -5,6 +5,7 @@
 </p>
 <p align="center">
   <a href="https://github.com/minrahim1999/aegis"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-minrahim1999%2Faegis-181717?style=flat-square&logo=github" /></a>
+  <a href="https://www.npmjs.com/package/aegis-harness"><img alt="npm" src="https://img.shields.io/npm/v/aegis-harness?style=flat-square" /></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" /></a>
 </p>
 
@@ -23,6 +24,17 @@ The binary is `aegis` and the config directory is `~/.aegis/agent/`.
 ---
 
 ## Quick Start
+
+**Option A — install from npm (recommended):**
+
+```bash
+npm install -g aegis-harness
+
+# Run Aegis (interactive TUI)
+aegis
+```
+
+**Option B — from source:**
 
 ```bash
 # Build from source
